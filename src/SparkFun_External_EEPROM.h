@@ -69,6 +69,8 @@
 
 #endif
 
+#define EEPROM_MEMORY_SIZE_2KBIT 2048
+
 struct struct_memorySettings
 {
   TwoWire *i2cPort;

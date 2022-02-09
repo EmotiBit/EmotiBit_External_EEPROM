@@ -161,8 +161,11 @@ void ExternalEEPROM::read(uint32_t eepromLocation, uint8_t *buff, uint16_t buffe
       delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
 
     settings.i2cPort->beginTransmission(i2cAddress);
-    settings.i2cPort->write((uint8_t)((eepromLocation + received) >> 8));   // MSB
-    settings.i2cPort->write((uint8_t)((eepromLocation + received) & 0xFF)); // LSB
+	if (settings.memorySize_bytes * 8 > EEPROM_MEMORY_SIZE_2KBIT)
+	{
+		settings.i2cPort->write((uint8_t)((eepromLocation + received) >> 8));   // MSB
+	}
+	settings.i2cPort->write((uint8_t)((eepromLocation + received) & 0xFF)); // LSB
     settings.i2cPort->endTransmission();
 
     settings.i2cPort->requestFrom((uint8_t)i2cAddress, (uint8_t)amtToRead);
@@ -225,7 +228,10 @@ void ExternalEEPROM::write(uint32_t eepromLocation, const uint8_t *dataToWrite, 
       delayMicroseconds(100);          //This shortens the amount of time waiting between writes but hammers the I2C bus
 
     settings.i2cPort->beginTransmission(i2cAddress);
-    settings.i2cPort->write((uint8_t)((eepromLocation + recorded) >> 8));   // MSB
+	if (settings.memorySize_bytes * 8 > EEPROM_MEMORY_SIZE_2KBIT)
+	{
+		settings.i2cPort->write((uint8_t)((eepromLocation + recorded) >> 8));   // MSB
+	}
     settings.i2cPort->write((uint8_t)((eepromLocation + recorded) & 0xFF)); // LSB
     for (uint8_t x = 0; x < amtToWrite; x++)
       settings.i2cPort->write(dataToWrite[recorded + x]);
